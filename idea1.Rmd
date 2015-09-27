@@ -51,11 +51,88 @@ grViz("
 
 
 ```{r}
-N <- 10
+library(mvtnorm)
+N <- 100
+df <- data.frame(H=rnorm(N),
+                 I=rnorm(N),
+                 J=rnorm(N),
+                 K=rnorm(N),
+                 L=rnorm(N),
+                 M=rnorm(N),
+                 N=rnorm(N),
+                 O=rnorm(N)
+                 )
+
+Sigma <- diag(8)
+Sigma[1,2] <- Sigma[2,1] <- .5
+Sigma[3,4] <- Sigma[4,3] <- .5
+Sigma[5,6] <- Sigma[6,5] <- .5
+Sigma[7,8] <- Sigma[8,7] <- .5
+
+mydat <- data.frame(rmvnorm(3, mean=rep(0, 8), Sigma))
+
+
+Sigma <- diag(4)
+Sigma[1,2] <- Sigma[2,1] <- .5
+Sigma[3,4] <- Sigma[4,3] <- .5
+
+mydat <- data.frame(rmvnorm(N, mean=rep(0, 4), Sigma))
+names(mydat) <- c("D", "E", "F", "G")
+head(mydat)
+
+
+
+#names(mydat) <- names(df)
+head(mydat)
 ```
 
 ```{r}
 library(sem)
+qqqqqmodel.taxa <- specifyModel(text="
+A<->A, theta1, NA
+A->B, gam1, NA
+A->C, gam1, NA
+B->D, gam2, NA
+B->E, gam2, NA
+C->F, gam3, NA
+C->G, gam3, NA
+D->H, gam4, NA
+D->I, gam4, NA
+E->J, gam5, NA
+E->K, gam5, NA
+F->L, gam6, NA
+F->M, gam6, NA
+G->N, gam7, NA
+G->O, gam7, NA
+")
+
+model.taxa2 <- specifyModel(text="
+A<->A, theta1, NA
+A->B, gam1, NA
+A->C, NA, 1
+B->D, NA,   1
+B->E, gam1, NA
+C->F, NA,   1
+C->G, gam1, NA
+")
+
+EmpVar <- var(mydat)
+EmpVar
+
+res <- sem(model.taxa2, S=EmpVar, N=N, maxiter=50, quiet=FALSE)
+
+
+#EmpVar <- var(df)
+#EmpVar
+#head(df)
+#res <- sem(model.taxa, data=mydat, maxiter=50)
+
+#res <- sem(model.taxa, EmpVar, N=N, maxiter=50)
+# str(res)
+res
+res$C
+res$A
+#sem(model.taxa, data=df)
 ```
 
 ## Extending the model to classification/prediction
