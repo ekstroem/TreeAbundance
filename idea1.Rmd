@@ -1,0 +1,110 @@
+---
+title: "Tree Abundance"
+author: "Claus Ekstrøm"
+date: "27 Sep 2015"
+output: html_document
+---
+
+This is just a test of an initial idea.
+
+
+# Setup
+
+Imagine a known binary tree that describes the relationship between a set of species. We know the relationship but we do not know the individual strength of the effects. We would like to be able to utilize the information on the relationship between the species for later classification and/or prediction. In the figure below the boxes represent obsered abundances while the circles are latent (unobserved) variables. We assume that we have a total of $N$ simultaneous measurements of each of the observed variables.
+
+```{r echo=FALSE}
+library(DiagrammeR)
+grViz("
+  digraph neato {
+
+   bgcolor='transparent';
+  
+    rankdir=TD;
+    node[width=1,height=1,fixedsize=true];
+
+    node [shape = box, fontname = Helvetica]
+    H;I;J;K;L;M;N;O;
+  
+    node [shape = circle] A;B;C;D;E;F;G;
+
+    { rank=same; B ; C}
+
+    edge[weight=20];
+    A -> B, C;
+
+    B -> D, E;
+    C -> F, G;
+
+    D -> H, I;
+    E -> J, K;
+    F -> L, M;
+    G -> N, O;
+
+    edge[weight=1];
+
+  }
+", width=600, height=300, engine="dot")
+```
+
+
+## Estimating the relationship between taxa
+
+
+```{r}
+N <- 10
+```
+
+```{r}
+library(sem)
+```
+
+## Extending the model to classification/prediction
+
+```{r echo=FALSE}
+library(DiagrammeR)
+grViz("
+  digraph neato {
+
+   bgcolor='transparent';
+  
+    rankdir=TD;
+    node[width=1,height=1,fixedsize=true];
+
+    node [shape = box, fontname = Helvetica]
+    H;I;J;K;L;M;N;O;
+    HH;II;JJ;KK;LL;MM;NN;OO;
+
+  
+    node [shape = circle] A;B;C;D;E;F;G;
+
+    { rank=same; B ; C}
+
+    edge[weight=20];
+    A -> B, C;
+
+    B -> D, E;
+    C -> F, G;
+
+    D -> H, I;
+    E -> J, K;
+    F -> L, M;
+    G -> N, O;
+
+    H -> HH;
+    I -> II;
+    J -> JJ;
+    K -> KK;
+    L -> LL;
+    M -> MM;
+    N -> NN;
+    O -> OO;
+
+    edge[weight=1];
+
+    A[label='Assigned\ntreatment',shape=circle,fillcolor='lightblue',style='filled'];
+    B[label='Actual\ntreatment',shape=circle,fillcolor='lightblue',style='filled'];
+    C[label='Confounder',shape=circle,fillcolor='MistyRose',style='filled'];
+
+  }
+", width=600, height=300, engine="dot")
+```
